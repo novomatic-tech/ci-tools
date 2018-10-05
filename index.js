@@ -16,7 +16,7 @@ program
         const commitHash = await getCommitHash();
         const branchName = await getBranchName();
         const tags = extractDockerTags(commitHash);
-        console.log(tags);
+        
         await docker.build({registry: pkg.docker.registry, path, imageName: pkg.name, tags, labels: {commitId: commitHash, branch: branchName}});
     });
 
