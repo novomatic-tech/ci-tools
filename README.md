@@ -34,8 +34,8 @@ Sample snippet of the `package.json` file:
     "bundle-push": "ci-tools bundle-push",
     "docker-build": "ci-tools docker-build .",
     "docker-push": "ci-tools docker-push",
-    "helm-charts-build": "ci-tools helm-build --source ./charts",
-    "helm-charts-push": "ci-tools helm-push"
+    "helm-charts-build": "ci-tools helm-charts-build --source ./charts",
+    "helm-charts-push": "ci-tools helm-charts-push"
   },
   "bundle": {
     "registry": "https://some.nexus.example.com/repository/bundles"
