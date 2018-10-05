@@ -1,6 +1,6 @@
 {
   "name": "ci-tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The command line tool that helps developers to create and publish artifacts in easy and automated way.",
   "bin": "index.js",
   "keywords": [
