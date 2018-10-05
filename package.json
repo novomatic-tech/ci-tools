@@ -1,0 +1,28 @@
+{
+  "name": "ci-tools",
+  "version": "0.1.0",
+  "description": "The command line tool that helps developers to create and publish artifacts in easy and automated way.",
+  "bin": "index.js",
+  "keywords": [
+    "ci",
+    "build",
+    "tools",
+    "docker",
+    "bundle"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/novomatic-tech/ci-tools.git"
+  },
+  "author": "NOVOMATIC Technologies Poland S.A.",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "archiver": "^3.0.0",
+    "commander": "^2.18.0",
+    "helm-charts": "^0.1.3"
+  }
+}
