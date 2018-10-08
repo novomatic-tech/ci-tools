@@ -111,7 +111,7 @@ program
         const bundleName = getBundleName();
         await bundle.push({
             path: bundleName,
-            destinationUrl: pkg.bundle.registry,
+            destinationUrl: pkg.bundle.registry + `/${bundleName}`,
             username: options.username,
             password: options.password
         });
