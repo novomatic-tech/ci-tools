@@ -2,7 +2,7 @@ const sh = require('./sh');
 
 class Docker {
 
-    async build({registry, path = '.', imageName, tags = [], labels = {}}) {
+    async build({registry, path = '.', imageName, tags = [], labels = {}, buildArgs = []}) {
         if (!imageName) {
             throw new Error('Missing image name.')
         }
@@ -12,8 +12,9 @@ class Docker {
 
         const tagsOption = tags.map(tag => `--tag ${registry}/${imageName}:${tag}`);
         const labelsOption = Object.getOwnPropertyNames(labels).map(label => `--label ${label}=${labels[label]}`);
+        const buildArgsOption = buildArgs.map(buildArg => `--build-arg ${buildArg}`);
 
-        await sh(`docker image build ${tagsOption.join(' ')} ${labelsOption.join(' ')} ${path}`, {returnStdout: false});
+        await sh(`docker image build ${tagsOption.join(' ')} ${labelsOption.join(' ')} ${buildArgsOption.join(' ')} ${path}`, {returnStdout: false});
     }
 
 

@@ -12,12 +12,13 @@ const pkg = require(process.cwd() + '/package.json');
 program
     .command('docker-build <path>')
     .description('Builds an image from a Dockerfile')
-    .action(async (path) => {
+    .option('--build-arg [list]', 'Sets build-time variables', collect, [])
+    .action(async (path, options) => {
         const commitHash = await getCommitHash();
         const branchName = await getBranchName();
         const tags = extractDockerTags(commitHash);
         
-        await docker.build({registry: pkg.docker.registry, path, imageName: pkg.name, tags, labels: {commitId: commitHash, branch: branchName}});
+        await docker.build({registry: pkg.docker.registry, path, imageName: pkg.name, tags, labels: {commitId: commitHash, branch: branchName}, buildArgs: options.buildArg});
     });
 
 program
@@ -116,6 +117,11 @@ process.on('unhandledRejection', (error) => {
     console.error(error);
     process.exitCode = 1;
 });
+
+function collect(value, memory) {
+    memory.push(value);
+    return memory;
+}
 
 function getBundleName() {
     return `${pkg.name}-${pkg.version}.zip`;

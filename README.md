@@ -74,6 +74,10 @@ The bundles are versioned in the same way as the version in the `package.json` f
 
 Builds an image from a Dockerfile. Where `<path>` is a path where the `Dockerfile` file resides.
 
+**Options:**
+
+* `--build-arg [list]` - Sets build-time variables. Example: `--build-arg ARG1=foo --build-arg ARG2=bar`
+
 ### `ci-tools docker-push`
 
 Pushes an image to a registry.
