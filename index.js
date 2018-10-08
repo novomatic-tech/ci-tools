@@ -12,13 +12,19 @@ const pkg = require(process.cwd() + '/package.json');
 program
     .command('docker-build <path>')
     .description('Builds an image from a Dockerfile')
-    .option('--build-arg [list]', 'Sets build-time variables', collect, [])
-    .action(async (path, options) => {
+    .action(async (path) => {
         const commitHash = await getCommitHash();
         const branchName = await getBranchName();
         const tags = extractDockerTags(commitHash);
-        
-        await docker.build({registry: pkg.docker.registry, path, imageName: pkg.name, tags, labels: {commitId: commitHash, branch: branchName}, buildArgs: options.buildArg});
+
+        await docker.build({
+            registry: pkg.docker.registry,
+            path,
+            imageName: pkg.name,
+            tags,
+            labels: {commitId: commitHash, branch: branchName},
+            buildArgs: [`PKG_NAME=${pkg.name}`, `PKG_VERSION=${pkg.version}`]
+        });
     });
 
 program
@@ -103,7 +109,12 @@ program
         }
 
         const bundleName = getBundleName();
-        await bundle.push({path: bundleName, destinationUrl: pkg.bundle.registry, username: options.username, password: options.password});
+        await bundle.push({
+            path: bundleName,
+            destinationUrl: pkg.bundle.registry,
+            username: options.username,
+            password: options.password
+        });
     });
 
 program.on('command:*', () => {
@@ -117,11 +128,6 @@ process.on('unhandledRejection', (error) => {
     console.error(error);
     process.exitCode = 1;
 });
-
-function collect(value, memory) {
-    memory.push(value);
-    return memory;
-}
 
 function getBundleName() {
     return `${pkg.name}-${pkg.version}.zip`;

@@ -73,10 +73,10 @@ The bundles are versioned in the same way as the version in the `package.json` f
 ### `ci-tools docker-build <path>`
 
 Builds an image from a Dockerfile. Where `<path>` is a path where the `Dockerfile` file resides.
+Additionally, two environment variable are accessible in the Dockerfile during build-time:
 
-**Options:**
-
-* `--build-arg [list]` - Sets build-time variables. Example: `--build-arg ARG1=foo --build-arg ARG2=bar`
+* `PKG_NAME` - the name property from the `package.json` file
+* `PKG_VERSION` - the version property from the `package.json` file
 
 ### `ci-tools docker-push`
 
