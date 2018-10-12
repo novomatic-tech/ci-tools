@@ -12,7 +12,8 @@ const pkg = require(process.cwd() + '/package.json');
 program
     .command('docker-build <path>')
     .description('Builds an image from a Dockerfile')
-    .action(async (path) => {
+    .option('--build-arg [list]', 'Sets build-time variables', collect, [])
+    .action(async (path, options) => {
         const commitHash = await getCommitHash();
         const branchName = await getBranchName();
         const tags = extractDockerTags(commitHash);
@@ -23,7 +24,7 @@ program
             imageName: pkg.name,
             tags,
             labels: {commitId: commitHash, branch: branchName},
-            buildArgs: [`PKG_NAME=${pkg.name}`, `PKG_VERSION=${pkg.version}`]
+            buildArgs: [`PKG_NAME=${pkg.name}`, `PKG_VERSION=${pkg.version}`].concat(options.buildArg)
         });
     });
 
@@ -49,6 +50,8 @@ program
     .command('helm-charts-build')
     .option('-s, --source [source]', 'A directory with chart sources. It can either be a directory with a single Charts.yaml file or with subdirectories defining multiple charts', '.')
     .option('-o, --output [output]', 'A directory chart packages should be produced in', 'charts-output')
+    .option('-v, --version [version]', 'A chart version if different than set the version in \'package.json\'')
+    .option('--appVersion [appVersion]', 'An appVersion if different than set the version in \'package.json\'')
     .description('Builds all charts from the specified directory, places them in the ./charts-output directory and generates a repo index.')
     .action(async (options) => {
         const commitHash = await getCommitHash();
@@ -60,8 +63,8 @@ program
         await helmCharts.build({
             source: options.source,
             output: options.output,
-            version: chartVersion,
-            appVersion: chartVersion
+            version: isString(options.version) ? options.version : chartVersion,
+            appVersion: isString(options.appVersion) ? options.appVersion : chartVersion,
         });
     });
 
@@ -170,5 +173,13 @@ async function getCommitHash() {
     return (await sh('git rev-parse HEAD')).trim();
 }
 
+function collect(value, memory) {
+    memory.push(value);
+    return memory;
+}
+
+function isString(value){
+    return typeof value === 'string' || value instanceof String;
+}
 
 

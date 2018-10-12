@@ -78,6 +78,10 @@ Additionally, two environment variable are accessible in the Dockerfile during b
 * `PKG_NAME` - the name property from the `package.json` file
 * `PKG_VERSION` - the version property from the `package.json` file
 
+**Options:**
+
+* `--build-arg [list]` - Sets additional build-time variables. Example: `--build-arg ARG1=foo --build-arg ARG2=bar`
+
 ### `ci-tools docker-push`
 
 Pushes an image to a registry.
@@ -94,6 +98,8 @@ Builds all charts from the specified directory, places them in the `./charts-out
 
 * `-s, --source [source]` - A directory with chart sources. It can either be a directory with a single Charts.yaml file or with subdirectories defining multiple charts. Default: `.`.
 * `-o, --output [output]` - A directory chart packages should be produced in. Default: `charts-output`.
+* `-v, --version [version]` - A chart version if different than set the version in `package.json`.
+* `--appVersion [appVersion]` - An appVersion if different than set the version in `package.json`.
 
 ### `ci-tools helm-chart-push`
 
