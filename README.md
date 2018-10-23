@@ -86,10 +86,6 @@ Additionally, two environment variable are accessible in the Dockerfile during b
 
 Pushes an image to a registry.
 
-**Options:**
-
-* `-f, --force` - Publishing a stable version is not allowed from branch other than master. Use this flag if you want to publish it anyway.
-
 ### `ci-tools helm-chart-build`
 
 Builds all charts from the specified directory, places them in the `./charts-output` directory and generates a repo index.
@@ -107,7 +103,6 @@ Pushes all charts from the `./charts-output` directory to a raw registry specifi
 
 **Options:**
 
-* `-f, --force` - Publishing a stable version is not allowed from branch other than master. Use this flag if you want to publish it anyway.
 * `-c, --chartsDir [chartsDir]` - A directory containing built charts packages. Default: `charts-output`.
 * `-u, --username [username]` - The username for the Helm charts registry.
 * `-p, --password [password]` - The password for the Helm charts registry.
@@ -117,12 +112,16 @@ Pushes all charts from the `./charts-output` directory to a raw registry specifi
 Bundles a directory to zip archive. Where `<path>` is a path to directory that should be bundled. 
 The bundle will be created in the current working directory with the following name: `[name]-[version].zip`.
 
+**Options:**
+
+* `-s, --suffix [suffix]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file.
+
 ### `ci-tools bundle-push`
 
 Pushes a bundle to a registry.
 
 **Options:**
 
-* `-f, --force` - Publishing a stable version is not allowed from branch other than master. Use this flag if you want to publish it anyway.
+* `-s, --suffix [suffix]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file.
 * `-u, --username [username]` - The username for the HTTP registry.
 * `-p, --password [password]` - The password for the HTTP registry.

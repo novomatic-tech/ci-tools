@@ -30,13 +30,8 @@ program
 
 program
     .command('docker-push')
-    .option('-f, --force', 'Publishing a stable version is not allowed from branch other than master. Use this flag if you want to publish it anyway.')
     .description('Pushes an image to a registry')
-    .action(async (options) => {
-        if (!options.force) {
-            const branch = await getBranchName();
-            ensureBranchIsAllowed(branch);
-        }
+    .action(async () => {
 
         const commitHash = await getCommitHash();
         const tags = extractDockerTags(commitHash);
@@ -73,13 +68,8 @@ program
     .option('-c, --chartsDir [chartsDir]', 'A directory containing built charts packages', 'charts-output')
     .option('-u, --username [username]', 'The username for the Helm charts registry')
     .option('-p, --password [password]', 'The password for the Helm charts registry')
-    .option('-f, --force', 'Publishing a stable version is not allowed from branch other than master. Use this flag if you want to publish it anyway.')
     .description('Pushes all charts from the ./charts-output directory to a raw registry specified in the package.json file.')
     .action(async (options) => {
-        if (!options.force) {
-            const branch = await getBranchName();
-            ensureBranchIsAllowed(branch);
-        }
 
         await helmCharts.publish({
             chartsDir: options.chartsDir,
@@ -93,25 +83,21 @@ program
 
 program
     .command('bundle-create <path>')
+    .option('-s, --suffix [suffix]', 'A suffix that will be added to bundle name. Default is a version form the \'package.json\' file.', pkg.version)
     .description('Bundles a directory to zip archive')
-    .action(async (path) => {
-        const bundleName = getBundleName();
+    .action(async (path, options) => {
+        const bundleName = getBundleName(options.suffix);
         await bundle.create({path, output: bundleName});
     });
 
 program
     .command('bundle-push')
-    .option('-f, --force', 'Publishing a stable version is not allowed from branch other than master. Use this flag if you want to publish it anyway.')
+    .option('-s, --suffix [suffix]', 'A suffix that will be added to bundle name. Default is a version form the \'package.json\' file.', pkg.version)
     .option('-u, --username [username]', 'The username for the HTTP registry.')
     .option('-p, --password [password]', 'The password for the HTTP registry.')
     .description('Pushes a bundle to a registry')
     .action(async (options) => {
-        const branch = await getBranchName();
-        if (!options.force) {
-            ensureBranchIsAllowed(branch);
-        }
-
-        const bundleName = getBundleName();
+        const bundleName = getBundleName(options.suffix);
         await bundle.push({
             path: bundleName,
             destinationUrl: pkg.bundle.registry + `/${bundleName}`,
@@ -132,8 +118,8 @@ process.on('unhandledRejection', (error) => {
     process.exitCode = 1;
 });
 
-function getBundleName() {
-    return `${pkg.name}-${pkg.version}.zip`;
+function getBundleName(suffix) {
+    return `${pkg.name}-${suffix}.zip`;
 }
 
 function extractDockerTags(commitHash) {
@@ -157,12 +143,6 @@ function extractDockerTags(commitHash) {
 
 function getVersionWithHash(commitHash) {
     return pkg.version.replace('SNAPSHOT', 'g' + commitHash.substring(0, 7));
-}
-
-function ensureBranchIsAllowed(branch) {
-    if (!pkg.version.endsWith('-SNAPSHOT') && branch !== 'master') {
-        throw new Error('Cannot publish a stable version from branch other than master. Use the --force flag if you want to publish it anyway.');
-    }
 }
 
 async function getBranchName() {
