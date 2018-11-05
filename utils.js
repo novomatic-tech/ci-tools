@@ -1,12 +1,15 @@
-const {spawnSync} = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const spawn = require('cross-spawn');
 
 const sh = (cmd, options = {}) => {
     options.cwd ? console.log(`> ${cmd} in ${options.cwd}`) : console.log(`> ${cmd.slice(0)}`);
     const commandArr = cmd.split(/\s+/);
     const procName = commandArr[0];
-    const proc = spawnSync(procName, commandArr.splice(1), options);
+    const proc = spawn.sync(procName, commandArr.splice(1), options);
+    if (proc.error) {
+        throw new Error(proc.error);
+    }
     if (proc.status !== 0) {
         throw new Error(`Unsuccessful status code: ${proc.status}`);
     }

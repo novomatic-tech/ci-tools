@@ -1,6 +1,6 @@
 {
   "name": "ci-tools",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The command line tool that helps developers to create and publish artifacts in easy and automated way.",
   "bin": "index.js",
   "keywords": [
@@ -23,6 +23,7 @@
   "dependencies": {
     "archiver": "^3.0.0",
     "commander": "^2.18.0",
+    "cross-spawn": "^6.0.5",
     "helm-charts": "^0.1.3"
   }
 }
