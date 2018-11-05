@@ -80,30 +80,43 @@ Additionally, two environment variable are accessible in the Dockerfile during b
 
 **Options:**
 
-* `--build-arg [list]` - Sets additional build-time variables. Example: `--build-arg ARG1=foo --build-arg ARG2=bar`
+* `-r, --registry [registry]` - The docker registry url
+* `-n, --name [name]` - The docker image name (default: `pkg.name`)
+* `-v, --version [version]` - The docker image version (default: `pkg.version`)
+* `-t, --tag [tags]` - An image tags if different than in versioning convention
+* `--build-arg [list]` - Sets additional build-time variables. Example: `--build-arg ARG1=foo --build-arg ARG2=bar`. (default: [])
 
 ### `ci-tools docker-push`
 
 Pushes an image to a registry.
 
-### `ci-tools helm-chart-build`
+**Options:**
+
+* `-r, --registry [registry]` - The docker registry url. (default: `pkg.docker.registry`)
+* `-n, --name [name]` - The docker image name (default: `pkg.name`)
+* `-v, --version [version]` - The docker image version (default: `pkg.version`)
+* `-t, --tag [tags]` - An image tags if different than in versioning convention
+
+### `ci-tools helm-charts-build`
 
 Builds all charts from the specified directory, places them in the `./charts-output` directory and generates a repo index.
 
 **Options:**
 
-* `-s, --source [source]` - A directory with chart sources. It can either be a directory with a single Charts.yaml file or with subdirectories defining multiple charts. Default: `.`.
-* `-o, --output [output]` - A directory chart packages should be produced in. Default: `charts-output`.
-* `-v, --version [version]` - A chart version if different than set the version in `package.json`.
-* `--appVersion [appVersion]` - An appVersion if different than set the version in `package.json`.
+* `-s, --source [source]` - A directory with chart sources. It can either be a directory with a single Charts.yaml file or with subdirectories defining multiple charts (default: .)
+* `-o, --output [output]` - A directory chart packages should be produced in (default: charts-output)
+* `-v, --version [version]` - A chart version if different than set the version in `package.json` (default: `pkg.version`)
+* `--appVersion [appVersion]` - An appVersion if different than set the version in `package.json` (default: `pkg.version`)
 
-### `ci-tools helm-chart-push`
+
+### `ci-tools helm-charts-push`
 
 Pushes all charts from the `./charts-output` directory to a raw registry specified in the `package.json` file.
 
 **Options:**
 
 * `-c, --chartsDir [chartsDir]` - A directory containing built charts packages. Default: `charts-output`.
+* `-r, --registry [registry]` - The helm charts registry url. (default: `pkg.helmCharts.registry`)
 * `-u, --username [username]` - The username for the Helm charts registry.
 * `-p, --password [password]` - The password for the Helm charts registry.
 
@@ -114,14 +127,17 @@ The bundle will be created in the current working directory with the following n
 
 **Options:**
 
-* `-s, --suffix [suffix]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file.
-
+* `-n, --name [name]` - The bundle name (default: `pkg.name`)
+* `-s, --suffix [suffix]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file. (default: `pkg.version`)
+ 
 ### `ci-tools bundle-push`
 
 Pushes a bundle to a registry.
 
 **Options:**
 
+* `-n, --name [name]` - The bundle name (default: `pkg.name`)
 * `-s, --suffix [suffix]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file.
 * `-u, --username [username]` - The username for the HTTP registry.
 * `-p, --password [password]` - The password for the HTTP registry.
+* `-r, --registry [registry]` - The HTTP registry url. (default: `pkg.bundle.registry`)

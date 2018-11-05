@@ -1,8 +1,8 @@
-const sh = require('./sh');
+const {sh} = require('./utils');
 
 class Docker {
 
-    async build({registry, path = '.', imageName, tags = [], labels = {}, buildArgs = []}) {
+    build({registry, path = '.', imageName, tags = [], labels = {}, buildArgs = []}) {
         if (!imageName) {
             throw new Error('Missing image name.')
         }
@@ -14,11 +14,10 @@ class Docker {
         const labelsOption = Object.getOwnPropertyNames(labels).map(label => `--label ${label}=${labels[label]}`);
         const buildArgsOption = buildArgs.map(buildArg => `--build-arg ${buildArg}`);
 
-        await sh(`docker image build ${tagsOption.join(' ')} ${labelsOption.join(' ')} ${buildArgsOption.join(' ')} ${path}`, {returnStdout: false});
+        sh(`docker image build ${tagsOption.join(' ')} ${labelsOption.join(' ')} ${buildArgsOption.join(' ')} ${path}`, {stdio: 'inherit'});
     }
 
-
-    async push({registry, imageName, tags = []}) {
+    push({registry, imageName, tags = []}) {
         if (!imageName) {
             throw new Error('Missing image name.')
         }
@@ -28,7 +27,7 @@ class Docker {
 
         const images = tags.map(tag => `${registry}/${imageName}:${tag}`);
         for (const image of images) {
-            await sh(`docker push ${image}`, {returnStdout: false});
+            sh(`docker push ${image}`, {stdio: 'inherit'});
         }
     }
 }
