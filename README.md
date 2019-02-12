@@ -41,7 +41,7 @@ Sample snippet of the `package.json` file:
     "registry": "https://some.nexus.example.com/repository/bundles"
   },
   "docker": {
-    "registry": "registry.hub.docker.com"
+    "registry": "library"
   },
   "helmCharts": {
     "registry": "https://some.nexus.example.com/repository/helm/charts"
@@ -96,6 +96,9 @@ Pushes an image to a registry.
 * `-n, --name [name]` - The docker image name (default: `pkg.name`)
 * `-v, --version [version]` - The docker image version (default: `pkg.version`)
 * `-t, --tag [tags]` - An image tags if different than in versioning convention
+* `-o, --noOverwrite [regex]` - A regex pattern that determines when to not overwrite tags in the registry (default: `^\d+\.\d+\.\d+$`)
+* `-u, --username [username]` - The username for the registry
+* `-p, --password [password]` - The password for the registry
 
 ### `ci-tools helm-charts-build`
 

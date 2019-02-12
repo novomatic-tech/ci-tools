@@ -36,15 +36,18 @@ program
 
 program
     .command('docker-push')
-    .description('Pushes an image to a registry')
+    .description('Pushes an image to the registry')
     .option('-r, --registry [registry]', 'The docker registry url', pkg.docker.registry)
     .option('-n, --name [name]', 'The docker image name', pkg.name)
     .option('-v, --version [version]', 'The docker image version', pkg.version)
     .option('-t, --tag [tags]', 'An image tags if different than in versioning convention', collect)
-    .action((options) => {
+    .option('-o, --noOverwrite [regex]', 'A regex pattern that determines when to not overwrite tags in the registry', "^\\d+\\.\\d+\\.\\d+$")
+    .option('-u, --username [username]', 'The username for the registry')
+    .option('-p, --password [password]', 'The password for the registry')
+    .action(async (options) => {
         const tags = options.tag || extractDockerTags(options.version, getCommitHash());
 
-        docker.push({registry: options.registry, imageName: options.name, tags});
+        await docker.push({registry: options.registry, imageName: options.name, tags, noOverwrite: new RegExp(options.noOverwrite), username: options.username, password: options.password});
     });
 
 // helm commands
