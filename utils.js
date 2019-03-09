@@ -3,10 +3,14 @@ const path = require('path');
 const spawn = require('cross-spawn');
 
 const sh = (cmd, options = {}) => {
-    options.cwd ? console.log(`> ${cmd} in ${options.cwd}`) : console.log(`> ${cmd.slice(0)}`);
+    const opt = Object.assign({log: true}, options);
+    if (opt.log) {
+        opt.cwd ? console.log(`> ${cmd} in ${opt.cwd}`) : console.log(`> ${cmd}`);
+    }
+
     const commandArr = cmd.split(/\s+/);
     const procName = commandArr[0];
-    const proc = spawn.sync(procName, commandArr.splice(1), options);
+    const proc = spawn.sync(procName, commandArr.splice(1), opt);
     if (proc.error) {
         throw new Error(proc.error);
     }
@@ -14,7 +18,7 @@ const sh = (cmd, options = {}) => {
         throw new Error(`Unsuccessful status code: ${proc.status}`);
     }
     if (proc.stdout) {
-        const output = proc.stdout.toString('utf8').trim();
+        const output = proc.stdout.toString().trim();
         console.log(output);
         return output;
     }

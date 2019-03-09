@@ -131,8 +131,9 @@ The bundle will be created in the current working directory with the following n
 **Options:**
 
 * `-n, --name [name]` - The bundle name (default: `pkg.name`)
-* `-s, --suffix [suffix]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file. (default: `pkg.version`)
- 
+* `-v, --version [version]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file. (default: `pkg.version`)
+* `-d, --destination [destination]` -  A directory where bundle will be generated. (default: `.`)
+
 ### `ci-tools bundle-push`
 
 Pushes a bundle to a registry.
@@ -140,7 +141,20 @@ Pushes a bundle to a registry.
 **Options:**
 
 * `-n, --name [name]` - The bundle name (default: `pkg.name`)
-* `-s, --suffix [suffix]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file.
+* `-v, --version [version]` - A suffix that will be added to bundle name. Default is a version form the `package.json` file. (default: `pkg.version`)
+* `-d, --dir [dir]` - A directory where a bundle resides. (default: `.`)
+* `-u, --username [username]` - The username for the HTTP registry.
+* `-p, --password [password]` - The password for the HTTP registry.
+* `-r, --registry [registry]` - The HTTP registry url. (default: `pkg.bundle.registry`)
+
+### `ci-tools file-push`
+
+Pushes a file to a registry
+
+**Options:**
+
+* `-n, --name [name]` - The file name. (default: `pkg.name`)
+* `-s, --dir [dir]` - A directory where a file resides. (default: `.`)
 * `-u, --username [username]` - The username for the HTTP registry.
 * `-p, --password [password]` - The password for the HTTP registry.
 * `-r, --registry [registry]` - The HTTP registry url. (default: `pkg.bundle.registry`)

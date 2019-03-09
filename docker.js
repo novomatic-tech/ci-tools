@@ -62,6 +62,10 @@ class Docker {
             filteredTags = tags.filter(tag => !excludedTags.includes(tag));
         }
 
+        if (username && password) {
+            sh(`docker login ${registry} -u ${username} -p ${password}`, {stdio: 'inherit', log: false});
+        }
+
         const images = filteredTags.map(tag => `${registry}/${imageName}:${tag}`);
         for (const image of images) {
             sh(`docker push ${image}`, {stdio: 'inherit'});

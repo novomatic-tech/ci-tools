@@ -3,6 +3,7 @@ const program = require('commander');
 const bundle = require('./bundle');
 const docker = require('./docker');
 const helmCharts = require('helm-charts');
+const {join} = require('path');
 const {getCommitHash, getBranchName, extractDockerTags, getVersionWithHash} = require('./utils');
 const pkg = Object.assign({
     docker: {},
@@ -92,26 +93,45 @@ program
 program
     .command('bundle-create <path>')
     .option('-n, --name [name]', 'The bundle name', pkg.name)
-    .option('-s, --suffix [suffix]', 'A suffix that will be added to bundle name. Default is a version form the \'package.json\' file.', pkg.version)
+    .option('-v, --version [version]', 'A suffix that will be added to bundle name. Default is a version form the \'package.json\' file.', pkg.version)
+    .option('-d, --destination [destination]', 'A directory where bundle will be generated.', '')
     .description('Bundles a directory to zip archive')
     .action(async (path, options) => {
-        const bundleName = getBundleName(options.name, options.suffix);
-        await bundle.create({path, output: bundleName});
+        const bundleName = getBundleName(options.name, options.version);
+        await bundle.create({path, output: join(options.destination, bundleName)});
     });
 
 program
     .command('bundle-push')
     .option('-n, --name [name]', 'The bundle name', pkg.name)
-    .option('-s, --suffix [suffix]', 'A suffix that will be added to bundle name. Default is a version form the \'package.json\' file.', pkg.version)
+    .option('-v, --version [version]', 'A suffix that will be added to bundle name. Default is a version form the \'package.json\' file.', pkg.version)
+    .option('-d, --dir [dir]', 'A directory where a bundle resides.', '')
     .option('-u, --username [username]', 'The username for the HTTP registry.')
     .option('-p, --password [password]', 'The password for the HTTP registry.')
     .option('-r, --registry [registry]', 'The HTTP registry url', pkg.bundle.registry)
     .description('Pushes a bundle to a registry')
     .action(async (options) => {
-        const bundleName = getBundleName(options.name, options.suffix);
+        const bundleName = getBundleName(options.name, options.version);
         await bundle.push({
-            path: bundleName,
+            path: join(options.dir, bundleName),
             destinationUrl: options.registry + `/${bundleName}`,
+            username: options.username,
+            password: options.password
+        });
+    });
+
+program
+    .command('file-push')
+    .option('-n, --name [name]', 'The file name.', pkg.name)
+    .option('-s, --dir [dir]', 'A directory where a file resides.', '')
+    .option('-u, --username [username]', 'The username for the HTTP registry.')
+    .option('-p, --password [password]', 'The password for the HTTP registry.')
+    .option('-r, --registry [registry]', 'The HTTP registry url', pkg.bundle.registry)
+    .description('Pushes a file to a registry')
+    .action(async (options) => {
+        await bundle.push({
+            path: join(options.dir, options.name),
+            destinationUrl: options.registry + `/${options.name}`,
             username: options.username,
             password: options.password
         });
@@ -129,7 +149,8 @@ process.on('unhandledRejection', (error) => {
     process.exitCode = 1;
 });
 
-function getBundleName(name, suffix) {
+function getBundleName(name, version) {
+    const suffix = version.endsWith('-SNAPSHOT') ? getVersionWithHash(version, getCommitHash()) : version;
     return `${name}-${suffix}.zip`;
 }
 
